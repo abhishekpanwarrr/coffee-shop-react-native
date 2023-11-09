@@ -37,6 +37,7 @@ const HomeScreen = () => {
   const [sortedCoffee, setSortedCoffee] = useState(getCoffeeList(categoryIndex.category, coffeeList))
 
   const tabBarHeight = useBottomTabBarHeight()
+  // console.log("sortedCoffee", sortedCoffee.length);
 
   return (
     <View style={styles.ScreenContainer}>
@@ -53,10 +54,26 @@ const HomeScreen = () => {
           <TextInput placeholder='Search coffee' value={searchText} onChangeText={(e) => setSearchText(e)} placeholderTextColor={COLORS.primaryLightGreyHex}
             style={styles.TextInputContainer} />
         </View>
+
         {/* Category */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.CategoryScrollViewStyles}>
-
+          {categories?.map((data, index) => (
+            <View key={index.toString()} style={styles.CategoryScrollViewContainer}>
+              <TouchableOpacity onPress={() => {
+                setCategoryIndex({ index: index, category: categories[index] })
+                setSortedCoffee([...getCoffeeList(categories[index], coffeeList)])
+              }} style={styles.CategoryScrollViewItem}>
+                <Text style={[styles.CategoryText, categoryIndex.index === index ? { color: COLORS.primaryOrangeHex, } : {}]}>{data}</Text>
+                {categoryIndex.index === index ? <View style={styles.ActiveCategory} /> : null}
+              </TouchableOpacity>
+            </View>
+          ))}
         </ScrollView>
+
+        {/* Coffe flatlist */}
+        
+
+        {/* Beans FlatList */}
       </ScrollView>
     </View>
   )
@@ -65,6 +82,24 @@ const HomeScreen = () => {
 export default HomeScreen
 
 const styles = StyleSheet.create({
+  CategoryScrollViewItem: {
+    alignItems: "center"
+  },
+  CategoryScrollViewContainer: {
+    paddingHorizontal: SPACING.space_15
+  },
+  CategoryText: {
+    fontFamily: FONTFAMILY.poppins_semibold,
+    fontSize: FONTSIZE.size_16,
+    color: COLORS.primaryLightGreyHex,
+    marginBottom: SPACING.space_4
+  },
+  ActiveCategory: {
+    height: SPACING.space_10,
+    width: SPACING.space_10,
+    borderRadius: BORDERRADIUS.radius_20,
+    backgroundColor: COLORS.primaryOrangeHex
+  },
   ScreenContainer: {
     flex: 1,
     backgroundColor: COLORS.primaryBlackHex
@@ -96,6 +131,7 @@ const styles = StyleSheet.create({
     color: COLORS.primaryWhiteHex
   },
   CategoryScrollViewStyles: {
-
+    paddingHorizontal: SPACING.space_20,
+    marginBottom: SPACING.space_20
   }
 })
