@@ -31,9 +31,9 @@ const getCoffeeList = (category: string, data: any) => {
   }
 }
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }: any) => {
   const CoffeeList = useStore((state: any) => state.CoffeeList);
-  const BeansList = useStore((state: any) => state.BeansList);
+  const BeanList = useStore((state: any) => state.BeanList);
   const [categories, setCategories] = useState(getCategoriesFromData(CoffeeList))
   const [searchText, setSearchText] = useState("")
   const [categoryIndex, setCategoryIndex] = useState({ index: 0, category: categories[0] })
@@ -41,6 +41,9 @@ const HomeScreen = () => {
 
   const ListRef: any = useRef<FlatList>();
   const tabBarHeight = useBottomTabBarHeight()
+
+  const addToCart = useStore((state: any) => state.addToCart);
+  const calculateCartPrice = useStore((state: any) => state.calculateCartPrice);
 
   const searchCoffee = (search: string) => {
     if (search !== "") {
@@ -62,6 +65,29 @@ const HomeScreen = () => {
     setSortedCoffee([...CoffeeList])
     setSearchText("")
   }
+
+  const CoffeeCardAddToCart = ({
+    id,
+    index,
+    name,
+    roasted,
+    imagelink_square,
+    special_ingredient,
+    type,
+    prices,
+  }: any) => {
+    addToCart({
+      id,
+      index,
+      name,
+      roasted,
+      imagelink_square,
+      special_ingredient,
+      type,
+      prices,
+    });
+    calculateCartPrice();
+  };
 
   return (
     <View style={styles.ScreenContainer}>
@@ -115,18 +141,18 @@ const HomeScreen = () => {
           contentContainerStyle={styles.FlatListContainer}
           keyExtractor={item => item.id}
           renderItem={({ item }) => {
-            return <TouchableOpacity onPress={() => { }}>
+            return <TouchableOpacity onPress={() => { navigation.push('Details', { index: item.index, id: item.id, type: item.type }) }}>
               <CoffeeCard
                 name={item.name}
                 id={item.id}
                 index={item.index}
                 type={item.type}
-                rosting={item.roasting}
+                roasted={item.roasting}
                 imagelink_square={item.imagelink_square}
                 special_ingredient={item.special_ingredient}
                 average_rating={item.average_rating}
                 price={item.prices[2]}
-                buttonPressHandler={() => { }} />
+                buttonPressHandler={CoffeeCardAddToCart} />
             </TouchableOpacity>
           }}
         />
@@ -137,22 +163,22 @@ const HomeScreen = () => {
         <FlatList
           horizontal
           showsHorizontalScrollIndicator={false}
-          data={BeansList}
+          data={BeanList}
           contentContainerStyle={[styles.FlatListContainer, { marginBottom: tabBarHeight }]}
           keyExtractor={item => item.id}
           renderItem={({ item }) => {
-            return <TouchableOpacity onPress={() => { }}>
+            return <TouchableOpacity onPress={() => { navigation.push('Details', { index: item.index, id: item.id, type: item.type }) }}>
               <CoffeeCard
                 name={item.name}
                 id={item.id}
                 index={item.index}
                 type={item.type}
-                rosting={item.roasting}
+                roasted={item.roasting}
                 imagelink_square={item.imagelink_square}
                 special_ingredient={item.special_ingredient}
                 average_rating={item.average_rating}
                 price={item.prices[2]}
-                buttonPressHandler={() => { }} />
+                buttonPressHandler={CoffeeCardAddToCart} />
             </TouchableOpacity>
           }}
         />
