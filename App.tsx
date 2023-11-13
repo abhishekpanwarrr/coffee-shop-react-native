@@ -11,13 +11,13 @@ const Stack = createNativeStackNavigator()
 const App = () => {
   return (
     <NavigationContainer>
-        <Stack.Navigator screenOptions={{
-          headerShown: false
-        }}>
-          <Stack.Screen name='Tabs' component={TabNavigator} options={{ animation: "fade_from_bottom" }} />
-          <Stack.Screen name='Details' component={DetailsScreen} options={{ animation: "fade_from_bottom" }} />
-          <Stack.Screen name='Payment' component={PaymentScreen} options={{ animation: "fade_from_bottom" }} />
-        </Stack.Navigator>
+      <Stack.Navigator screenOptions={{
+        headerShown: false
+      }}>
+        <Stack.Screen name='Tabs' component={TabNavigator} options={{ animation: "fade_from_bottom" }} />
+        <Stack.Screen name='Details' component={DetailsScreen} options={{ animation: "fade_from_bottom", headerShown: false }} />
+        <Stack.Screen name='Payment' component={PaymentScreen} options={{ animation: "fade_from_bottom" }} />
+      </Stack.Navigator>
     </NavigationContainer>
   )
 }
