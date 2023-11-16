@@ -1,105 +1,55 @@
-import { Dimensions, FlatList, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
-import { useStore } from '../store/store'
+import { Dimensions, FlatList, ImageProps, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs"
 import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme'
 import HeaderBar from '../components/HeaderBar'
-import CustomIcon from '../components/CustomIcon'
 import CoffeeCard from '../components/CoffeeCard'
-
-const getCategoriesFromData = (data: any) => {
-  let temp: any = {};
-  for (let i = 0; i < data.length; i++) {
-    if (temp[data[i].name] == undefined) {
-      temp[data[i].name] = 1
-    } else {
-      temp[data[i].name]++
-    }
-  }
-  let categories = Object.keys(temp)
-  categories.unshift("All")
-  return categories
-
+interface Coffee {
+  id?: string
+  name: string
+  description: string
+  roasted: string
+  imagelink_square: ImageProps
+  imagelink_portrait: ImageProps
+  ingredients: string
+  special_ingredient: string
+  size: []
+  price: []
+  average_rating: string
+  ratings_count: string
+  favourite: boolean
+  type: string
 }
-
-const getCoffeeList = (category: string, data: any) => {
-  if (category === "All") {
-    return data
-  } else {
-    let coffeelist = data.filter((item: any) => item.name === category)
-    return coffeelist
-  }
+interface Beans {
+  id?: string
+  name: string
+  description: string
+  roasted: string
+  imagelink_square: ImageProps
+  imagelink_portrait: ImageProps
+  ingredients: string
+  special_ingredient: string
+  price: []
+  size: []
+  average_rating: string
+  ratings_count: string
+  favourite: boolean
+  type: string
 }
-
 const HomeScreen = ({ navigation }: any) => {
-  const CoffeeList = useStore((state: any) => state.CoffeeList);
-  const BeanList = useStore((state: any) => state.BeanList);
-  const [categories, setCategories] = useState(getCategoriesFromData(CoffeeList))
-  const [searchText, setSearchText] = useState("")
-  const [categoryIndex, setCategoryIndex] = useState({ index: 0, category: categories[0] })
-  const [sortedCoffee, setSortedCoffee] = useState(getCoffeeList(categoryIndex.category, CoffeeList))
-
-  const ListRef: any = useRef<FlatList>();
+  const [beansList, setBeansList] = useState<Array<Beans>>([])
+  const [coffeeList, setCoffeeList] = useState<Array<Beans>>([])
   const tabBarHeight = useBottomTabBarHeight()
 
-  const addToCart = useStore((state: any) => state.addToCart);
-  const calculateCartPrice = useStore((state: any) => state.calculateCartPrice);
-
-  const searchCoffee = (search: string) => {
-    if (search !== "") {
-      ListRef?.current?.scrollToOffset({
-        animated: true,
-        offset: 0
-      })
-      setCategoryIndex({ index: 0, category: categories[0] })
-      setSortedCoffee([...CoffeeList.filter((item: any) => item.name.toLowerCase().includes(search.toLocaleLowerCase()))])
-    }
-  }
-
-  const resetSearchCoffee = () => {
-    ListRef?.current?.scrollToOffset({
-      animated: true,
-      offset: 0
-    })
-    setCategoryIndex({ index: 0, category: categories[0] })
-    setSortedCoffee([...CoffeeList])
-    setSearchText("")
-  }
-
-  const CoffeeCardAddToCart = ({
-    id,
-    index,
-    name,
-    roasted,
-    imagelink_square,
-    special_ingredient,
-    type,
-    prices,
-  }: any) => {
-    addToCart({
-      id,
-      index,
-      name,
-      roasted,
-      imagelink_square,
-      special_ingredient,
-      type,
-      prices,
-    });
-    calculateCartPrice();
-  };
-
-  useEffect(() =>{
-    (async () =>{
-      const response = await fetch("http://localhost:9000/api/coffee/all",{
-        method:"GET"
+  useEffect(() => {
+    (async () => {
+      const response = await fetch("http://localhost:9000/api/coffee/all", {
+        method: "GET"
       })
       const data = await response.json()
-      console.log("data",data);
-      setSortedCoffee(data)
-      
+      setCoffeeList(data)
     })()
-  },[])
+  }, [])
   return (
     <View style={styles.ScreenContainer}>
       <StatusBar backgroundColor={COLORS.primaryBlackHex} />
@@ -108,7 +58,7 @@ const HomeScreen = ({ navigation }: any) => {
         <HeaderBar />
         <Text style={styles.ScreenTitle}>Find the best {'\n'} coffee for you</Text>
         {/* Search Input */}
-        <View style={styles.InputContainerComponent}>
+        {/* <View style={styles.InputContainerComponent}>
           <TouchableOpacity onPress={() => {
             searchCoffee(searchText)
           }}>
@@ -119,10 +69,10 @@ const HomeScreen = ({ navigation }: any) => {
           {searchText.length > 0 ? <TouchableOpacity onPress={() => resetSearchCoffee()}>
             <CustomIcon style={styles.InputIcon} name='close' size={FONTSIZE.size_16} color={COLORS.primaryLightGreyHex} />
           </TouchableOpacity> : null}
-        </View>
+        </View> */}
 
         {/* Category */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.CategoryScrollViewStyles}>
+        {/* <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.CategoryScrollViewStyles}>
           {categories?.map((data, index) => (
             <View key={index.toString()} style={styles.CategoryScrollViewContainer}>
               <TouchableOpacity onPress={() => {
@@ -138,32 +88,31 @@ const HomeScreen = ({ navigation }: any) => {
               </TouchableOpacity>
             </View>
           ))}
-        </ScrollView>
+        </ScrollView> */}
 
         {/* Coffe flatlist */}
         <FlatList
-          ref={ListRef}
           ListEmptyComponent={<View style={styles.EmptyListContainer}>
-            <Text style={styles.CategoryText}>No coffee found.</Text>
+            <Text style={styles.CategoryText}>No coffee found!</Text>
           </View>}
           horizontal
           showsHorizontalScrollIndicator={false}
-          data={sortedCoffee}
+          data={coffeeList}
           contentContainerStyle={styles.FlatListContainer}
-          keyExtractor={item => item.id}
+          keyExtractor={(item, index) => item.id || index.toString()}
           renderItem={({ item }) => {
-            return <TouchableOpacity onPress={() => { navigation.push('Details', { index: item.index, id: item.id, type: item.type }) }}>
+            return <TouchableOpacity onPress={() => { navigation.push('Details', { item }) }}>
               <CoffeeCard
                 name={item.name}
                 id={item.id}
-                index={item.index}
                 type={item.type}
-                roasted={item.roasting}
+                roasted={item.roasted}
                 imagelink_square={item.imagelink_square}
                 special_ingredient={item.special_ingredient}
                 average_rating={item.average_rating}
-                price={item.prices[2]}
-                buttonPressHandler={CoffeeCardAddToCart} />
+                price={item.price}
+                size={item.size}
+                buttonPressHandler={() => { }} />
             </TouchableOpacity>
           }}
         />
@@ -174,22 +123,22 @@ const HomeScreen = ({ navigation }: any) => {
         <FlatList
           horizontal
           showsHorizontalScrollIndicator={false}
-          data={BeanList}
+          data={coffeeList}
           contentContainerStyle={[styles.FlatListContainer, { marginBottom: tabBarHeight }]}
-          keyExtractor={item => item.id}
+          keyExtractor={(item, index) => item.id || index.toString()}
           renderItem={({ item }) => {
-            return <TouchableOpacity onPress={() => { navigation.push('Details', { index: item.index, id: item.id, type: item.type }) }}>
+            return <TouchableOpacity onPress={() => { navigation.push('Details', { item }) }}>
               <CoffeeCard
                 name={item.name}
                 id={item.id}
-                index={item.index}
                 type={item.type}
-                roasted={item.roasting}
+                roasted={item.roasted}
                 imagelink_square={item.imagelink_square}
                 special_ingredient={item.special_ingredient}
                 average_rating={item.average_rating}
-                price={item.prices[2]}
-                buttonPressHandler={CoffeeCardAddToCart} />
+                price={item.price}
+                size={item.size}
+                buttonPressHandler={() => { }} />
             </TouchableOpacity>
           }}
         />

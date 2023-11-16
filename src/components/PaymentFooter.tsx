@@ -3,10 +3,7 @@ import React, { FC } from 'react'
 import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme'
 
 interface PaymentFooterProps {
-    price: {
-        price: string
-        currency: string
-    }
+    price?: string
     buttonTitle: string
     buttonPressHandler: any
 }
@@ -18,7 +15,10 @@ const PaymentFooter: FC<PaymentFooterProps> = ({
         <View style={styles.PriceFooter}>
             <View style={styles.PriceContainer}>
                 <Text style={styles.PriceTitle}>Price </Text>
-                <Text style={styles.PriceText}>{price?.currency} <Text style={styles.Price}>{price?.price}</Text></Text>
+                <Text style={styles.PriceText}>₹ <Text style={styles.Price}>
+                    {price}
+                
+                    </Text></Text>
             </View>
             <TouchableOpacity style={styles.PayButton} onPress={() => buttonPressHandler()}>
                 <Text style={styles.ButtonText}>{buttonTitle}</Text>
