@@ -5,6 +5,8 @@ import DetailsScreen from './src/screens/DetailsScreen'
 import PaymentScreen from './src/screens/PaymentScreen'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import TabNavigator from './src/navigators/TabNavigator'
+import ProfileScreen from './src/screens/ProfileScreen'
+import SignupScreen from './src/screens/SignupScreen'
 
 const Stack = createNativeStackNavigator()
 
@@ -17,6 +19,8 @@ const App = () => {
         <Stack.Screen name='Tabs' component={TabNavigator} options={{ animation: "fade_from_bottom" }} />
         <Stack.Screen name='Details' component={DetailsScreen} options={{ animation: "fade_from_bottom", headerShown: false }} />
         <Stack.Screen name='Payment' component={PaymentScreen} options={{ animation: "fade_from_bottom" }} />
+        <Stack.Screen name='Profile' component={ProfileScreen} options={{ animation: "fade_from_bottom" }} />
+        <Stack.Screen name='Signup' component={SignupScreen} options={{ animation: "fade_from_bottom" }} />
       </Stack.Navigator>
     </NavigationContainer>
   )

@@ -1,5 +1,5 @@
 import { Dimensions, FlatList, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useStore } from '../store/store'
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs"
 import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme'
@@ -89,6 +89,17 @@ const HomeScreen = ({ navigation }: any) => {
     calculateCartPrice();
   };
 
+  useEffect(() =>{
+    (async () =>{
+      const response = await fetch("http://localhost:9000/api/coffee/all",{
+        method:"GET"
+      })
+      const data = await response.json()
+      console.log("data",data);
+      setSortedCoffee(data)
+      
+    })()
+  },[])
   return (
     <View style={styles.ScreenContainer}>
       <StatusBar backgroundColor={COLORS.primaryBlackHex} />
