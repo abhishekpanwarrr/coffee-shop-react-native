@@ -7,14 +7,15 @@ import BGIcon from './BGIcon'
 
 interface CoffeeCardProps {
     name: string
-    id: string
-    index: number
+    id?: string
+    index?: number
     type: string
     roasted: string
     imagelink_square: ImageProps
     special_ingredient: string
     average_rating: string
     price: any
+    size?: any
     buttonPressHandler: any
 }
 const CARD_WIDTH = Dimensions.get("window").width * 0.32;
@@ -29,8 +30,11 @@ const CoffeeCard: FC<CoffeeCardProps> = ({
     special_ingredient,
     average_rating,
     price,
+    size,
     buttonPressHandler
 }) => {
+
+
     return (
         <LinearGradient
             start={{ x: 0, y: 0 }}
@@ -39,7 +43,9 @@ const CoffeeCard: FC<CoffeeCardProps> = ({
             colors={[COLORS.primaryGreyHex, COLORS.primaryBlackHex]}
         >
             <ImageBackground
-                source={imagelink_square}
+                source={{
+                    uri: String(imagelink_square)
+                }}
                 style={styles.CardImageBackground}
                 resizeMode='cover'>
                 <View style={styles.CardRatingContainer}>
@@ -51,7 +57,7 @@ const CoffeeCard: FC<CoffeeCardProps> = ({
             <Text style={styles.CardSubTitle}>{special_ingredient}</Text>
             <View style={styles.CardFooterRow}>
                 <Text style={styles.CardPriceCurrency}>
-                    $ <Text style={styles.CardPrice}>{price.price}</Text>
+                    $ <Text style={styles.CardPrice}>{price && price[0]} / {size && size[0]}</Text>
                 </Text>
                 <TouchableOpacity onPress={() => buttonPressHandler({
                     id,

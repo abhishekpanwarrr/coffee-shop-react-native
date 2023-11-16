@@ -26,8 +26,8 @@ interface ImageBackgroundInfoProps {
   name: string;
   special_ingredient: string;
   ingredients: string;
-  average_rating: number;
-  ratings_count: string;
+  average_rating?: number;
+  ratings_count?: string;
   roasted: string;
   BackHandler?: any;
   ToggleFavourite: any;
@@ -48,10 +48,14 @@ const ImageBackgroundInfo: React.FC<ImageBackgroundInfoProps> = ({
   BackHandler,
   ToggleFavourite,
 }) => {
+  console.log("imagelink_portrait",imagelink_portrait);
+  
   return (
     <View>
       <ImageBackground
-        source={imagelink_portrait}
+        source={{
+          uri:String(imagelink_portrait)
+        }}
         style={styles.ItemBackgroundImage}>
         {EnableBackHandler ? (
           <View style={styles.ImageHeaderBarContainerWithBack}>
